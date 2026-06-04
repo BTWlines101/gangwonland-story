@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>강원랜드 2박 3일</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --font: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+      --bg: #F5F2EE;
+      --card: #FFFFFF;
+      --accent: #FF5A5F;
+      --text-1: #1A1A1A;
+      --text-2: #717171;
+      --text-3: #AAAAAA;
+      --border: #E8E4DF;
+      --c-checkin:  #6B93C0;
+      --c-room:     #E07B54;
+      --c-fb:       #D4849A;
+      --c-parking:  #7BAF8A;
+      --c-common:   #A09080;
+      --c-facility: #9B85B8;
+      --c-leased:   #C0965A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-1);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding-bottom: 60px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: #FFFFFF;
+      padding: 44px 24px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .header-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      line-height: 1.2;
+      color: var(--text-1);
+      margin-bottom: 6px;
+    }
+    .header-sub {
+      font-size: 15px;
+      color: var(--text-2);
+      font-weight: 400;
+      margin-bottom: 18px;
+    }
+    .header-notice {
+      background: #FFF9F5;
+      border: 1px solid #F0E4DA;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* ── TAB BAR ── */
+    .tab-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg);
+      padding: 14px 24px;
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 11px 0;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      color: var(--text-2);
+      background: white;
+      border: 1.5px solid #D8D3CC;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow:
+        0 1px 0 #C8C3BC,
+        0 2px 6px rgba(0,0,0,0.07);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .tab-btn:hover:not(.active) {
+      border-color: #AAAAAA;
+      color: var(--text-1);
+    }
+    .tab-btn.active {
+      background: #FF5A5F;
+      color: #FFFFFF;
+      border-color: #FF5A5F;
+      font-weight: 700;
+      box-shadow:
+        0 4px 14px rgba(0,0,0,0.22),
+        0 1px 4px rgba(0,0,0,0.15);
+    }
+    .tab-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* ── CONTENT ── */
+    .day-content {
+      display: none;
+      padding: 20px 20px 0;
+    }
+    .day-content.active { display: block; }
+
+    /* ── SCENE CARDS ── */
+    .scene-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px 20px 20px 22px;
+      margin-bottom: 12px;
+      border-left: 3.5px solid transparent;
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.05),
+        0 4px 16px rgba(0,0,0,0.05);
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.42s ease,
+        transform 0.42s ease,
+        box-shadow 0.2s ease;
+    }
+    .scene-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .scene-card:hover {
+      box-shadow:
+        0 2px 6px rgba(0,0,0,0.07),
+        0 8px 28px rgba(0,0,0,0.08);
+    }
+
+    .scene-card[data-cat="checkin"]  { border-left-color: var(--c-checkin); }
+    .scene-card[data-cat="room"]     { border-left-color: var(--c-room); }
+    .scene-card[data-cat="fb"]       { border-left-color: var(--c-fb); }
+    .scene-card[data-cat="parking"]  { border-left-color: var(--c-parking); }
+    .scene-card[data-cat="common"]   { border-left-color: var(--c-common); }
+    .scene-card[data-cat="facility"] { border-left-color: var(--c-facility); }
+    .scene-card[data-cat="leased"]   { border-left-color: var(--c-leased); }
+
+    .scene-card.is-intro {
+      border-left: none;
+      background: linear-gradient(135deg, #FFFAF6 0%, #FFF5EF 100%);
+      border: 1px solid #F0E4D8;
+    }
+
+    .scene-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 9px;
+    }
+    .scene-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .scene-card[data-cat="checkin"]  .scene-label { color: var(--c-checkin); }
+    .scene-card[data-cat="room"]     .scene-label { color: var(--c-room); }
+    .scene-card[data-cat="fb"]       .scene-label { color: var(--c-fb); }
+    .scene-card[data-cat="parking"]  .scene-label { color: var(--c-parking); }
+    .scene-card[data-cat="common"]   .scene-label { color: var(--c-common); }
+    .scene-card[data-cat="facility"] .scene-label { color: var(--c-facility); }
+    .scene-card[data-cat="leased"]   .scene-label { color: var(--c-leased); }
+
+    .scene-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-1);
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .scene-title .icon {
+      margin-right: 4px;
+      font-style: normal;
+    }
+
+    .scene-body {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: #3D3D3D;
+      line-height: 1.75;
+      letter-spacing: -0.1px;
+    }
+    .scene-body p { margin-bottom: 10px; }
+    .scene-body p:last-child { margin-bottom: 0; }
+    .scene-body strong {
+      font-weight: 700;
+      color: var(--text-1);
+    }
+    .scene-body em {
+      font-style: normal;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .scene-card:nth-child(even):not(.is-intro) {
+      background: #FEFCFA;
+    }
+
+    /* ── END CARD ── */
+    .end-card {
+      background: #FF5A5F;
+      border-radius: 16px;
+      padding: 32px 24px;
+      margin-bottom: 12px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    .end-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .end-card .end-context {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 20px;
+    }
+    .end-card .end-scene {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .end-card .end-quote {
+      font-size: 21px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.4;
+      letter-spacing: -0.4px;
+    }
+    .end-card .end-quote::before,
+    .end-card .end-quote::after {
+      content: '"';
+      color: rgba(255,255,255,0.4);
+    }
+
+    .spacer { height: 8px; }
+
+    /* ── LOGIN OVERLAY (Rentis 디자인 시스템) ── */
+    .dt-login-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(150deg, #2563eb 0%, #6d28d9 35%, #8b5cf6 70%, #a78bfa 100%);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .dt-login-center {
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; max-width: 360px; padding: 0 28px; box-sizing: border-box;
+    }
+    .dt-login-title-kr {
+      font-family: 'Pretendard', sans-serif;
+      font-size: 28px; font-weight: 700; color: #fff;
+      text-align: center; letter-spacing: -0.03em;
+      line-height: 1.35; margin: 0 0 10px;
+    }
+    .dt-login-subtitle {
+      font-size: 13px; font-weight: 400;
+      color: rgba(255,255,255,0.50);
+      letter-spacing: 0.02em;
+      margin: 0 0 36px; text-align: center;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .dt-login-input-wrap {
+      position: relative; width: 100%; margin: 0 0 10px;
+    }
+    .dt-login-input {
+      width: 100%; height: 48px;
+      padding: 0 50px 0 20px;
+      font-size: 15px; color: #0f172a;
+      background: #ffffff;
+      border: none; border-radius: 999px; outline: none;
+      box-shadow: 0 6px 20px rgba(15,23,42,0.12), inset 0 1px 2px rgba(15,23,42,0.04);
+      box-sizing: border-box;
+    }
+    .dt-login-input::placeholder { color: #9ca3af; }
+    .dt-login-eye {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6d28d9, #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px;
+      border: none; cursor: pointer; flex-shrink: 0;
+    }
+    .dt-login-cta {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 48px;
+      font-size: 15px; font-weight: 600; color: #fff;
+      letter-spacing: 0.02em;
+      font-family: 'Pretendard', sans-serif;
+      background: linear-gradient(135deg, #6d28d9, #7c3aed);
+      border: none; border-radius: 999px;
+      box-shadow: 0 6px 18px rgba(109,40,217,0.45);
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    .dt-login-cta:active {
+      transform: scale(0.97);
+      box-shadow: 0 3px 10px rgba(109,40,217,0.35);
+    }
+    .dt-copyright {
+      position: fixed; bottom: 32px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
+      font-size: 11px; font-weight: 400;
+      color: rgba(255,255,255,0.30);
+      letter-spacing: 0.02em;
+    }
+    .dt-error-msg {
+      font-size: 12px; color: #fca5a5;
+      text-align: center; margin-top: 14px;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .dt-error-msg.show { opacity: 1; }
+    .dt-login-screen.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN OVERLAY ── -->
+<div id="pw-overlay" class="dt-login-screen">
+  <div class="dt-login-center">
+    <h1 class="dt-login-title-kr">
+      어느 가족의 강원랜드<br>2박 3일 여행기
+    </h1>
+    <p class="dt-login-subtitle">안내받은 비밀번호를 입력해주세요</p>
+    <div class="dt-login-input-wrap">
+      <input type="password" id="pw-input" class="dt-login-input"
+             placeholder="비밀번호 입력" inputmode="numeric" autocomplete="off"
+             maxlength="4" onkeydown="if(event.key==='Enter')handleLogin()">
+      <button class="dt-login-eye" id="pw-eye-btn" onclick="toggleEye()">
+        <i class="bi bi-eye"></i>
+      </button>
+    </div>
+    <button onclick="handleLogin()" class="dt-login-cta">입장하기</button>
+    <p id="error-msg" class="dt-error-msg">비밀번호가 일치하지 않습니다</p>
+  </div>
+  <p class="dt-copyright">Copyright &copy; TEAM SCS 2026. All rights reserved.</p>
+</div>
+
+<script>
+  var CORRECT_PW = '1234';
+
+  function toggleEye() {
+    var inp = document.getElementById('pw-input');
+    var btn = document.getElementById('pw-eye-btn');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.innerHTML = inp.type === 'password'
+      ? '<i class="bi bi-eye"></i>'
+      : '<i class="bi bi-eye-slash"></i>';
+  }
+
+  function handleLogin() {
+    var pw = document.getElementById('pw-input').value.trim();
+    var errEl = document.getElementById('error-msg');
+    if (pw === CORRECT_PW) {
+      errEl.classList.remove('show');
+      document.getElementById('pw-overlay').classList.add('hidden');
+    } else {
+      errEl.classList.add('show');
+      document.getElementById('pw-input').value = '';
+      setTimeout(function(){ errEl.classList.remove('show'); }, 2500);
+    }
+  }
+</script>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-eyebrow">어느 가족의 2박3일 강원랜드 여행기</div>
+    <h1 class="header-title">강원랜드 2박 3일</h1>
+    <p class="header-sub">한 가족의 이야기</p>
+    <div class="header-notice">
+      실제 고객 VOC를 바탕으로 재구성한 교육용 스토리입니다.
+      특정 개인이나 장소를 지칭하지 않으며, 다양한 접점에서 발생할 수 있는 상황을 담았습니다.
+    </div>
+  </header>
+
+  <!-- ── TABS ── -->
+  <div class="tab-wrap">
+    <button class="tab-btn active" onclick="switchTab('day1', this)">Day 1</button>
+    <button class="tab-btn"        onclick="switchTab('day2', this)">👆 Day 2</button>
+    <button class="tab-btn"        onclick="switchTab('day3', this)">👆 Day 3</button>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       DAY 1 — 콘도 체크인
+  ════════════════════════════════ -->
+  <div id="day1" class="day-content active">
+    <div class="spacer"></div>
+
+    <!-- 출발 -->
+    <div class="scene-card is-intro">
+      <div class="scene-title"><i class="icon">🏔️</i> 출발</div>
+      <div class="scene-body">
+        <p>2박 3일 강원랜드 여행이었다. 성수기라 객실 잡기가 쉽지 않아, 1박은 콘도에서 1박은 호텔에서 머무는 일정으로 잡았다.</p>
+        <p>아내는 호텔파, 아이는 콘도파 — 두 사람의 취향을 동시에 맞추는 일이 여간 고된 게 아니지만, 둘 다 기분 좋게 차에 탔다. 몇 주 전부터 기다려온 여행이었고, 달리는 내내 차 안이 밝았다.</p>
+      </div>
+    </div>
+
+    <!-- 도착 · 체크인센터 -->
+    <div class="scene-card" data-cat="checkin">
+      <div class="scene-label">콘도 · 체크인</div>
+      <div class="scene-title"><i class="icon">📍</i> 도착, 체크인센터로 이동</div>
+      <div class="scene-body">
+        <p>거리가 멀어서 좀 힘들었지만, 그래도 강원랜드에 도착. 강원랜드 도착 순간부터 아이는 이미 신나 있었다.</p>
+        <p>첫날은 콘도 숙박이라 콘도 체크인센터로 고고, 생각보다 너무 넓어서 처음에는 어디로 가야 하는지 좀 헷갈렸지만 표지판을 보고 체크인센터를 잘 찾아갔다.</p>
+      </div>
+    </div>
+
+    <!-- 체크인 응대 -->
+    <div class="scene-card" data-cat="checkin">
+      <div class="scene-label">체크인</div>
+      <div class="scene-title"><i class="icon">🗝️</i> 들으면서도 잘 모르겠다는 느낌</div>
+      <div class="scene-body">
+        <p>프론트 직원이 예약정보를 확인하고 체크인을 도와주었다. 안내자료를 보여주며 동 위치, 조식 식당 위치, 셔틀 관련 정보를 설명해줬는데 건물 위치 등이 처음이다 보니 이용하면서 그냥 찾아야겠다는 생각이 들었다.</p>
+        <p>설명을 듣고 있는데, 어떤 직원이 다른 직원을 혼내는 느낌이 들었다. 아이도 옆에 있었는데 좀 불편했다. 다른 공간에서 했으면 어땠을까 싶다.</p>
+      </div>
+    </div>
+
+    <!-- 객실 — 상태·비품·시설 (통합) -->
+    <div class="scene-card" data-cat="room">
+      <div class="scene-label">객실 · 시설</div>
+      <div class="scene-title"><i class="icon">🛏️</i> 객실 — 상태·비품·시설</div>
+      <div class="scene-body">
+        <p>배정받은 동에 주차하고 올라가는 내내 아이가 먼저 달려갔다. 객실 문을 열었다.</p>
+        <p>들어서자마자 이전 투숙객의 흔적 같은 음식 냄새가 났다. 하우스키핑에 연락하니 페브리즈를 가져다줬다. 입실 전에 환기가 됐어야 하지 않나 싶었지만, 더 얘기하기도 지쳐서 창문을 열어뒀다.</p>
+        <p>짐을 풀면서 와이파이를 연결하려는데 신호가 잡히지 않았다. 하우스키핑에 전화했더니 돌아온 말이 <em>"옆방 것을 잡아 쓰시면 됩니다"</em>였다. 당황스러웠다. 그게 안내라는 사실이 선뜻 이해가 되지 않았다.</p>
+      </div>
+    </div>
+
+    <!-- 저녁 식사 -->
+    <div class="scene-card" data-cat="fb">
+      <div class="scene-label">식음 · 레스토랑</div>
+      <div class="scene-title"><i class="icon">🍽️</i> 손님이 있다는 게 크게 신경 쓰이지 않는 분위기</div>
+      <div class="scene-body">
+        <p>저녁은 리조트 안 레스토랑으로 갔다. 직원들이 한쪽에서 자기들끼리 이야기를 나누고 있었고, 테이블 쪽엔 크게 신경을 쓰지 않는 분위기였다.</p>
+        <p>주문을 하고 나서 아이가 근처 체험 코너를 발견하고 잠깐 다녀오겠다고 했다. 우리 짐이 그대로 놓여 있는데, <em>"지금 가시는 건가요?"</em>라고 두세 번 확인을 했다. 들어온 지 얼마 되지도 않았는데.</p>
+      </div>
+    </div>
+
+    <!-- 카지노 -->
+    <div class="scene-card" data-cat="parking">
+      <div class="scene-label">주차 · 카지노</div>
+      <div class="scene-title"><i class="icon">🎲</i> 셔틀 타고 카지노로</div>
+      <div class="scene-body">
+        <p>저녁을 마치고 잠깐 카지노에 들르기로 했다. 카지노는 메인타워 안에 있어서 호텔 쪽으로 차를 가지고 갔는데, 호텔 주차장은 호텔 투숙객 전용이었다. 광장주차장에 차를 세우고 셔틀을 타고 이동했다. 거리도 있고 오르막이라 강원랜드에서 셔틀 이동은 필수인 듯했다.</p>
+        <p>아이는 카지노에 들어갈 수 없는 곳이라 아내와 아이는 호텔을 구경하기로 했다. 한 시간쯤 구경하고 나왔는데, 나와서 들으니 호텔 안에 아이가 즐길 만한 건 딱히 없었다고 했다. 아이들이 놀 만한 시설은 콘도 쪽에 있는데, 셔틀을 타고 또 이동하기엔 번거롭다 싶어 그냥 음료 한 잔 마시며 기다렸다고 했다. 아이 입장에서는 조금 아쉬운 시간이었을 것 같았다.</p>
+      </div>
+    </div>
+
+    <!-- 야식 -->
+    <div class="scene-card" data-cat="fb">
+      <div class="scene-label">식음 · 레스토랑</div>
+      <div class="scene-title"><i class="icon">🌙</i> 손가락으로 쟁반을 툭툭</div>
+      <div class="scene-body">
+        <p>밤늦게 야식을 먹으러 레스토랑에 들렀다. 음식을 픽업하러 갔더니 직원이 손가락으로 쟁반을 툭툭 치며 가져가라는 표시를 했다. 짧은 순간이었지만 기분이 좀 이상했다.</p>
+        <p>야식 시간이라 미리 만들어둔 것 같은 돈까스는 딱딱했다. 그냥 먹었다.</p>
+      </div>
+    </div>
+
+    <!-- 편의점 -->
+    <div class="scene-card" data-cat="leased">
+      <div class="scene-label">임대업장</div>
+      <div class="scene-title"><i class="icon">🛒</i> 리조트 안에 있는 가게인데</div>
+      <div class="scene-body">
+        <p>숙소로 돌아오는 길에 편의점에 들렀다. 계산할 때 직원이 물건을 던지듯 카운터에 올려놨다. 아이가 옆에 있어서 그냥 넘어갔다.</p>
+        <p>나중에 리조트 쪽에 얘기를 해보니, 편의점은 담당이 아니라는 답이 돌아왔다. 리조트 안에 있는 가게인데.</p>
+      </div>
+    </div>
+
+    <!-- 취침 준비 · 침구 벌레 -->
+    <div class="scene-card" data-cat="room">
+      <div class="scene-label">객실</div>
+      <div class="scene-title"><i class="icon">🛏️</i> 청소가 된 방인지 의심이 들었다</div>
+      <div class="scene-body">
+        <p>아이가 오늘 하루 실컷 달렸는지 씻기자마자 누웠다. 이불을 펼치다가 손이 멈췄다. 까만 것들이 보였다. 먼지인가 싶었는데, 자세히 보니 벌레였다. 침구에서 나왔다는 게 영 마음에 걸렸다. 청소가 된 방인지 의심이 들었다.</p>
+      </div>
+    </div>
+
+    <!-- 소음 -->
+    <div class="scene-card" data-cat="room">
+      <div class="scene-label">객실</div>
+      <div class="scene-title"><i class="icon">🔕</i> "확인해보겠습니다"</div>
+      <div class="scene-body">
+        <p>아이가 겨우 잠들었을 무렵, 위층인지 옆방인지 뛰는 소리가 시작됐다. 밤 열한 시가 넘은 시간이었다.</p>
+        <p>프론트에 전화하니 <em>"확인해보겠습니다"</em>라고 했다. 소음이 계속돼서 다시 전화했다. 같은 답이었다. 소음이 멎은 건 자정이 한참 지나서였다. 아이도, 우리도 그날 밤 제대로 잠을 자지 못했다.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       DAY 2 — 호텔로 이동
+  ════════════════════════════════ -->
+  <div id="day2" class="day-content">
+    <div class="spacer"></div>
+
+    <!-- 아침 브릿지 -->
+    <div class="scene-card is-intro">
+      <div class="scene-title"><i class="icon">☀️</i> 공기가 달랐다</div>
+      <div class="scene-body">
+        <p>아침에 눈을 떴는데 창 밖이 훤했다. 강원랜드가 산속에 있다는 게 이런 아침에 실감이 났다. 창문을 살짝 열었더니 서늘하고 맑은 바람이 들어왔다.</p>
+        <p>오늘은 호텔로 이동하는 날이었다. 어제보다는 나아질 것 같은 기분이 들었다.</p>
+      </div>
+    </div>
+
+    <!-- 조식 -->
+    <div class="scene-card" data-cat="fb">
+      <div class="scene-label">식음 · 조식</div>
+      <div class="scene-title"><i class="icon">☕</i> 기대에 조금 못 미쳤다</div>
+      <div class="scene-body">
+        <p>조식당에 가니 사람이 꽤 많았다. 자리 안내를 기다리며 입구에서 한참 서 있었다. 안내받은 자리로 이동해 음식을 담으러 갔는데, 과일 코너는 종류가 적었고 신선하지 않아 보이는 것도 있었다.</p>
+        <p>아이는 잘 먹었지만 어른들 입맛엔 조금 아쉬웠다. 기대에 살짝 못 미쳤다.</p>
+      </div>
+    </div>
+
+    <!-- 하우스키핑 무단입장 (콘도) -->
+    <div class="scene-card" data-cat="room">
+      <div class="scene-label">객실 · 하우스키핑</div>
+      <div class="scene-title"><i class="icon">🚪</i> 그나마 망정이었다</div>
+      <div class="scene-body">
+        <p>조식을 마치고 돌아와 짐을 싸고 있었다. 체크아웃 시간이 한참 남은 상태였는데 초인종 소리가 났다. 그리고 거의 바로 문이 열렸다. 하우스키핑이었다.</p>
+        <p>마침 아이가 씻으러 욕실로 들어가던 참이었다. 그나마 망정이었다. 어른이 탈의 중이었으면 어쩔 뻔했나 싶은 생각이 스쳤다.</p>
+        <p>체크아웃 시간이 남아 있다고 했더니 죄송하다고 하고 나갔다. 따로 연락이 오거나 사과가 이어지진 않았다. 짐 싸던 손을 다시 움직였다.</p>
+      </div>
+    </div>
+
+    <!-- 복도 · 화장실 -->
+    <div class="scene-card" data-cat="common">
+      <div class="scene-label">공용공간</div>
+      <div class="scene-title"><i class="icon">🚶</i> 복도와 화장실에서</div>
+      <div class="scene-body">
+        <p>짐을 끌고 나가는 길, 복도에서 직원과 눈이 마주쳤다. 목례를 했는데 그냥 지나치셨다. 꼭 받아줘야 한다는 건 아닌데, 가볍게 눈인사라도 해줬으면 했다.</p>
+        <p>체크아웃 전 화장실을 들렀는데 청소하는 분이 계셨다. 사용해도 된다고 하셔서 들어갔는데, 볼일을 보는 도중 문을 두드리며 <em>"아직 안에 계신 거죠?"</em>라고 하셨다. 처음부터 안 된다고 하셨으면 됐을 텐데. 짧은 순간이었지만 민망했다.</p>
+      </div>
+    </div>
+
+    <!-- 운암정 + 물놀이 -->
+    <div class="scene-card" data-cat="fb">
+      <div class="scene-label">식음 · 카페</div>
+      <div class="scene-title"><i class="icon">☕</i> 운암정에 들렀다</div>
+      <div class="scene-body">
+        <p>콘도 체크아웃을 마쳤다. 호텔 체크인 시간까지 여유가 있어서 짐은 맡겨두고 운암정에 들렀다. 인터넷에서 검색하다 봤던 한옥 카페였다.</p>
+        <p>자리에 앉으니 직원들이 한쪽에서 큰 소리로 통화하며 서로 이야기를 나누고 있었다. 테이블 쪽엔 눈길이 없었다. 주문을 하려고 잠깐 기다렸다. 차 맛 자체는 나쁘지 않았는데, 있는 내내 어딘가 어색한 분위기였다.</p>
+        <p>운암정을 나서서 차로 이동해 아이와 워터월드에서 시간을 보냈다. 아이가 이날 가장 기다린 시간이었다. 실컷 놀아주고 나오니 너무 힘들었지만 아이는 즐거워했다. 이제 호텔로 이동할 시간이었다.</p>
+      </div>
+    </div>
+
+    <!-- 발레파킹 (호텔 도착) -->
+    <div class="scene-card" data-cat="parking">
+      <div class="scene-label">주차 · 발레파킹</div>
+      <div class="scene-title"><i class="icon">🚗</i> 괜히 어색한 기분이 들었다</div>
+      <div class="scene-body">
+        <p>호텔 입구에서 발레파킹을 맡기려는데 예약 확인을 요청받았다. 아내 폰으로 받은 문자라 바로 보여주지 못했더니, 확인될 때까지 기다려달라는 말이 꽤 단호하게 나왔다. 뭔가 잘못한 것도 아닌데 괜히 어색한 기분이 들었다.</p>
+      </div>
+    </div>
+
+    <!-- 헬스장 · 사우나 -->
+    <div class="scene-card" data-cat="facility">
+      <div class="scene-label">부대시설</div>
+      <div class="scene-title"><i class="icon">🏊</i> 혼나는 느낌이 들었다</div>
+      <div class="scene-body">
+        <p>저녁 전 시간을 이용해 헬스장을 찾았다. 카운터에 직원이 보이지 않았다. 전화를 하니 그제야 나오셨다.</p>
+        <p>사우나만 이용하겠다고 했더니 <em>"다음부턴 저쪽 사우나로 이용하세요"</em>를 두 번 강조하셨다. 안내를 해주시는 건데, 들을 때는 왜인지 혼나는 느낌이 들었다.</p>
+      </div>
+    </div>
+
+    <!-- 호텔 객실 + 수건 정책 (통합) -->
+    <div class="scene-card" data-cat="room">
+      <div class="scene-label">객실 · 하우스키핑</div>
+      <div class="scene-title"><i class="icon">🛏️</i> 그날 저녁 내내</div>
+      <div class="scene-body">
+        <p>방에 들어서고 나서 뭔가 확인할 게 있어 프론트에 전화했다. 잠깐 기다리니 확인 후 다시 연락 주겠다고 했다. 시간이 꽤 지난 뒤 연락이 왔는데, 알고 보니 다른 객실에 전화를 해서 투숙객이 모른다고 했다는 거였다. 처음부터 다시 확인하겠다고 했다. 오가는 사이 시간이 더 걸렸다. 마지막에 직원이 웃으며 죄송하다고 했다.</p>
+        <p>저녁을 마치고 돌아와서는 이불을 추가하면서 수건도 같이 달라고 했는데, 하우스키핑에서 돌아온 답이 <em>"저희 정책은 그렇지 않고요, 누구와 통화하셨어요?"</em>였다. 앞서 통화에서 같이 가져다주기로 했던 터였는데. 잘못이 있으면 그냥 인정해줬으면 싶었는데, 정책 얘기가 먼저 나오는 게 불편했다.</p>
+      </div>
+    </div>
+
+    <!-- 음식 위생 -->
+    <div class="scene-card" data-cat="fb">
+      <div class="scene-label">식음 · 레스토랑</div>
+      <div class="scene-title"><i class="icon">🌙</i> 음식이 잘 들어가지 않았다</div>
+      <div class="scene-body">
+        <p>늦은 시간 레스토랑에 들렀다. 셀프로 음식을 담아 오는 방식이었다. 주방 쪽에서 직원이 국 간을 보려고 주걱을 입에 대더니, 그 주걱으로 그대로 조리를 이어갔다.</p>
+        <p>의도치 않게 보게 됐는데, 그 뒤로 음식이 잘 들어가지 않았다.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       DAY 3 — 체크아웃
+  ════════════════════════════════ -->
+  <div id="day3" class="day-content">
+    <div class="spacer"></div>
+
+    <!-- 아이 긁힘 -->
+    <div class="scene-card" data-cat="room">
+      <div class="scene-label">객실</div>
+      <div class="scene-title"><i class="icon">🤕</i> 아이가 소리를 질렀다</div>
+      <div class="scene-body">
+        <p>오늘은 조식을 신청하지 않았다. 여유롭게 쉬러 온 만큼 늦게까지 간만에 푹 잤다. 일어나 씻고, 짐을 하나씩 챙기며 체크아웃 준비를 하고 있었는데, 그러다 갑자기 아이가 소리를 질렀다.</p>
+        <p>침대 프레임 모서리에 뭔가 튀어나온 부분이 있었는데, 아이 손등이 스치면서 살짝 피가 나는 듯 했다. 워낙 활동량이 좋은 아이고 부주의하니 내 잘못이긴 한데, 이 정도로 날카로우면 누구라도 다칠 수 있을 것 같았다.</p>
+        <p>프론트에 연락하니 직원이 객실 확인해보겠다며 우선 약을 가져다드릴까요, 하고 안내했다. 약을 가져다주는 것 말고는 별다른 안내가 없었다. 어차피 곧 퇴실이기도 하고, 더 크게 안 다친 걸 다행이라고 생각하며 그냥 됐다고 하고 전화를 끊었다.</p>
+      </div>
+    </div>
+
+    <!-- 체크아웃 -->
+    <div class="scene-card" data-cat="checkin">
+      <div class="scene-label">체크아웃</div>
+      <div class="scene-title"><i class="icon">💬</i> "괜찮았어요"</div>
+      <div class="scene-body">
+        <p>짐을 끌고 프론트로 내려갔다. 카드키를 반납하는데 <em>"불편하신 점은 없으셨나요?"</em>라고 물어왔다. 이틀 동안 있었던 것들이 머릿속을 스쳐 지나갔다.</p>
+        <p>잠깐 말을 꺼낼까 했는데, 이미 다 끝난 일이기도 하고, 말을 해도 달라질 것이 없을 것 같기도 했다. <strong>"괜찮았어요"</strong>라고 했다.</p>
+        <p>로비를 나서면서 생각했다. 아무리 생각해도, 우리가 그리 대접받을 고객이 아닌가 하는 기분이 들었다. 그 마음을 말로 꺼내지 않았을 뿐이었다.</p>
+      </div>
+    </div>
+
+    <!-- 발레파킹 출차 -->
+    <div class="scene-card" data-cat="parking">
+      <div class="scene-label">주차 · 발레파킹</div>
+      <div class="scene-title"><i class="icon">🚗</i> 감사합니다, 하고 인사를 했는데</div>
+      <div class="scene-body">
+        <p>발레파킹 차를 찾는 데 시간이 걸렸다. 기다리는 동안 아무 안내가 없었다. 비가 조금 내리고 있었는데, 차가 왔을 때 바깥쪽 자리에 세워져 있었다.</p>
+        <p>차 키를 받으며 감사합니다, 하고 인사를 했는데 직원은 이미 동료 쪽으로 걸어가며 지나가버렸다. 멋쩍었다. 아이는 아무것도 모른 채 마냥 즐거워했지만, 나는 뭔가 씁쓸한 느낌이 들었다.</p>
+      </div>
+    </div>
+
+    <!-- END CARD -->
+    <div class="end-card">
+      <div class="end-context">주차 · 발레파킹</div>
+      <p class="end-scene">
+        그런 표정을 읽었는지,<br>
+        마지막에 아내가 말했다.
+      </p>
+      <p class="end-quote">여보, 다음엔 다른 데 가자.</p>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  /* ─── PASSWORD ─── */
+  const PASSWORD = "0000"; // ← 비번 변경 시 이 숫자 4자리만 바꾸세요
+
+  function checkPw() {
+    const input = document.getElementById('pw-input');
+    const entered = input.value.trim();
+    if (entered.length < 4) return;
+    if (entered === PASSWORD) {
+      document.getElementById('pw-overlay').classList.add('hidden');
+    } else {
+      const box = document.getElementById('pw-box');
+      document.getElementById('pw-error').classList.add('show');
+      box.classList.remove('shake');
+      void box.offsetWidth;
+      box.classList.add('shake');
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  window.addEventListener('load', () => document.getElementById('pw-input').focus());
+
+  /* ─── Tab switching ─── */
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      // 비활성 탭에 이모지 추가
+      const label = b.textContent.replace('👆 ', '').trim();
+      b.textContent = '👆 ' + label;
+    });
+    btn.classList.add('active');
+    // 활성 탭에서 이모지 제거
+    btn.textContent = btn.textContent.replace('👆 ', '').trim();
+    document.querySelectorAll('.day-content').forEach(c => c.classList.remove('active'));
+    const target = document.getElementById(tabId);
+    target.classList.add('active');
+
+    const cards = target.querySelectorAll('.scene-card, .end-card');
+    cards.forEach(c => c.classList.remove('visible'));
+    cards.forEach((c, i) => {
+      setTimeout(() => c.classList.add('visible'), i * 65 + 25);
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ─── Intersection Observer (scroll reveal) ─── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+
+  document.querySelectorAll('.scene-card, .end-card').forEach(c => observer.observe(c));
+
+  /* ─── Initial stagger for Day 1 ─── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const day1Cards = document.querySelectorAll('#day1 .scene-card, #day1 .end-card');
+    day1Cards.forEach((c, i) => {
+      setTimeout(() => c.classList.add('visible'), i * 65 + 80);
+    });
+  });
+</script>
+</body>
+</html>
