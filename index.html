@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!-- ============================================================
-     ★ 비밀번호 설정 — 아래 숫자만 바꾸고 저장하면 됩니다 ★
-     ============================================================ -->
-<script>var CORRECT_PW = '0528';</script>
-<!-- ============================================================ -->
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -289,131 +284,9 @@
     }
 
     .spacer { height: 8px; }
-
-    /* ── LOGIN OVERLAY (Rentis 디자인 시스템) ── */
-    .dt-login-screen {
-      position: fixed; inset: 0; z-index: 9999;
-      background: linear-gradient(150deg, #2563eb 0%, #6d28d9 35%, #8b5cf6 70%, #a78bfa 100%);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-    }
-    .dt-login-center {
-      display: flex; flex-direction: column; align-items: center;
-      width: 100%; max-width: 360px; padding: 0 28px; box-sizing: border-box;
-    }
-    .dt-login-title-kr {
-      font-family: 'Pretendard', sans-serif;
-      font-size: 28px; font-weight: 700; color: #fff;
-      text-align: center; letter-spacing: -0.03em;
-      line-height: 1.35; margin: 0 0 10px;
-    }
-    .dt-login-subtitle {
-      font-size: 13px; font-weight: 400;
-      color: rgba(255,255,255,0.50);
-      letter-spacing: 0.02em;
-      margin: 0 0 36px; text-align: center;
-      font-family: 'Pretendard', sans-serif;
-    }
-    .dt-login-input-wrap {
-      position: relative; width: 100%; margin: 0 0 10px;
-    }
-    .dt-login-input {
-      width: 100%; height: 48px;
-      padding: 0 50px 0 20px;
-      font-size: 15px; color: #0f172a;
-      background: #ffffff;
-      border: none; border-radius: 999px; outline: none;
-      box-shadow: 0 6px 20px rgba(15,23,42,0.12), inset 0 1px 2px rgba(15,23,42,0.04);
-      box-sizing: border-box;
-    }
-    .dt-login-input::placeholder { color: #9ca3af; }
-    .dt-login-eye {
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-      width: 30px; height: 30px; border-radius: 50%;
-      background: linear-gradient(135deg, #6d28d9, #7c3aed);
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 13px;
-      border: none; cursor: pointer; flex-shrink: 0;
-    }
-    .dt-login-cta {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; height: 48px;
-      font-size: 15px; font-weight: 600; color: #fff;
-      letter-spacing: 0.02em;
-      font-family: 'Pretendard', sans-serif;
-      background: linear-gradient(135deg, #6d28d9, #7c3aed);
-      border: none; border-radius: 999px;
-      box-shadow: 0 6px 18px rgba(109,40,217,0.45);
-      cursor: pointer;
-      transition: transform 0.12s, box-shadow 0.12s;
-    }
-    .dt-login-cta:active {
-      transform: scale(0.97);
-      box-shadow: 0 3px 10px rgba(109,40,217,0.35);
-    }
-    .dt-copyright {
-      position: fixed; bottom: 32px; left: 0; right: 0;
-      text-align: center;
-      font-family: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
-      font-size: 11px; font-weight: 400;
-      color: rgba(255,255,255,0.30);
-      letter-spacing: 0.02em;
-    }
-    .dt-error-msg {
-      font-size: 12px; color: #fca5a5;
-      text-align: center; margin-top: 14px;
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .dt-error-msg.show { opacity: 1; }
-    .dt-login-screen.hidden { display: none; }
   </style>
 </head>
 <body>
-
-<!-- ── LOGIN OVERLAY ── -->
-<div id="pw-overlay" class="dt-login-screen">
-  <div class="dt-login-center">
-    <h1 class="dt-login-title-kr">
-      어느 가족의 강원랜드<br>2박 3일 여행기
-    </h1>
-    <p class="dt-login-subtitle">안내받은 비밀번호를 입력해주세요</p>
-    <div class="dt-login-input-wrap">
-      <input type="password" id="pw-input" class="dt-login-input"
-             placeholder="비밀번호 입력" inputmode="numeric" autocomplete="off"
-             maxlength="4" onkeydown="if(event.key==='Enter')handleLogin()">
-      <button class="dt-login-eye" id="pw-eye-btn" onclick="toggleEye()">
-        <i class="bi bi-eye"></i>
-      </button>
-    </div>
-    <button onclick="handleLogin()" class="dt-login-cta">입장하기</button>
-    <p id="error-msg" class="dt-error-msg">비밀번호가 일치하지 않습니다</p>
-  </div>
-  <p class="dt-copyright">Copyright &copy; TEAM SCS 2026. All rights reserved.</p>
-</div>
-
-<script>
-  function toggleEye() {
-    var inp = document.getElementById('pw-input');
-    var btn = document.getElementById('pw-eye-btn');
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.innerHTML = inp.type === 'password'
-      ? '<i class="bi bi-eye"></i>'
-      : '<i class="bi bi-eye-slash"></i>';
-  }
-
-  function handleLogin() {
-    var pw = document.getElementById('pw-input').value.trim();
-    var errEl = document.getElementById('error-msg');
-    if (pw === CORRECT_PW) {
-      errEl.classList.remove('show');
-      document.getElementById('pw-overlay').classList.add('hidden');
-    } else {
-      errEl.classList.add('show');
-      document.getElementById('pw-input').value = '';
-      setTimeout(function(){ errEl.classList.remove('show'); }, 2500);
-    }
-  }
-</script>
 
 <div class="page">
 
@@ -693,38 +566,14 @@
 </div><!-- /page -->
 
 <script>
-  /* ─── PASSWORD ─── */
-  const PASSWORD = "0000"; // ← 비번 변경 시 이 숫자 4자리만 바꾸세요
-
-  function checkPw() {
-    const input = document.getElementById('pw-input');
-    const entered = input.value.trim();
-    if (entered.length < 4) return;
-    if (entered === PASSWORD) {
-      document.getElementById('pw-overlay').classList.add('hidden');
-    } else {
-      const box = document.getElementById('pw-box');
-      document.getElementById('pw-error').classList.add('show');
-      box.classList.remove('shake');
-      void box.offsetWidth;
-      box.classList.add('shake');
-      input.value = '';
-      input.focus();
-    }
-  }
-
-  window.addEventListener('load', () => document.getElementById('pw-input').focus());
-
   /* ─── Tab switching ─── */
   function switchTab(tabId, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => {
       b.classList.remove('active');
-      // 비활성 탭에 이모지 추가
       const label = b.textContent.replace('👆 ', '').trim();
       b.textContent = '👆 ' + label;
     });
     btn.classList.add('active');
-    // 활성 탭에서 이모지 제거
     btn.textContent = btn.textContent.replace('👆 ', '').trim();
     document.querySelectorAll('.day-content').forEach(c => c.classList.remove('active'));
     const target = document.getElementById(tabId);
